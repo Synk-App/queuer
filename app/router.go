@@ -9,12 +9,10 @@ import (
 
 func Router(service *Service) {
 	aboutController := controller.NewAbout(service.DB)
-	discordController := controller.NewDiscord(service.DB)
-	telegramController := controller.NewTelegram(service.DB)
+	postController := controller.NewPost(service.DB)
 
 	http.HandleFunc("GET /about", aboutController.HandleAbout)
-	http.HandleFunc("POST /discord/send", discordController.HandleSend)
-	http.HandleFunc("POST /telegram/send", telegramController.HandleSend)
+	http.HandleFunc("POST /send", postController.HandleSend)
 
 	port := os.Getenv("PORT")
 	util.Log("app running on port " + port)

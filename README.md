@@ -47,3 +47,46 @@ docker network create synk_network
 	"list": null
 }
 ```
+
+## Publish content from posts
+
+> `POST` /send
+
+### Request
+
+```json
+{
+	"posts": [1]
+}
+```
+
+### Response
+
+```json
+{
+	"resource": {
+		"ok": true,
+		"error": ""
+	},
+	"posts": {
+		"1": {
+			"2": {
+				"resource": {
+					"ok": true,
+					"error": ""
+				},
+				"http_code": 200,
+				"raw": "{\"ok\":true,\"result\":{\"message_id\":9,\"from\":{\"id\":12345678910,\"is_bot\":true,\"first_name\":\"Bot\",\"username\":\"bot\"},\"chat\":{\"id\":12345678910,\"first_name\":\"Cristian\",\"last_name\":\"Prochnow\",\"type\":\"private\"},\"date\":1764218621,\"text\":\"Nova publica\\u00e7\\u00e3o show\"}}"
+			},
+			"3": {
+				"resource": {
+					"ok": true,
+					"error": ""
+				},
+				"http_code": 200,
+				"raw": "{\"type\":0,\"content\":\"Nova publica\\u00e7\\u00e3o show\",\"mentions\":[],\"mention_roles\":[],\"attachments\":[],\"embeds\":[],\"timestamp\":\"2025-11-27T04:43:41.712000+00:00\",\"edited_timestamp\":null,\"flags\":0,\"components\":[],\"id\":\"12345678910\",\"channel_id\":\"144300515123456789104281394400\",\"author\":{\"id\":\"12345678910\",\"username\":\"Captain Hook\",\"avatar\":null,\"discriminator\":\"0000\",\"public_flags\":0,\"flags\":0,\"bot\":true,\"global_name\":null,\"clan\":null,\"primary_guild\":null},\"pinned\":false,\"mention_everyone\":false,\"tts\":false,\"webhook_id\":\"12345678910\"}\n"
+			}
+		}
+	}
+}
+```
