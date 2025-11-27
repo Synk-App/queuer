@@ -1,11 +1,14 @@
 package controller
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"net/http"
 	"os"
 	"strings"
 	"synk/gateway/app/util"
+	"time"
 )
 
 type Response struct {
@@ -19,6 +22,8 @@ type ResponseHeader struct {
 	Ok    bool   `json:"ok"`
 	Error string `json:"error"`
 }
+
+const AUTH_TIMEOUT = time.Second * 5
 
 func WriteErrorResponse(w http.ResponseWriter, response any, route string, message string, status int) {
 	util.LogRoute(route, message)
@@ -36,8 +41,40 @@ func WriteSuccessResponse(w http.ResponseWriter, response any) {
 	w.Write(jsonResp)
 }
 
+func WriteStatusResponse(w http.ResponseWriter, response any) {
+	jsonResp, _ := json.Marshal(response)
+
+	w.WriteHeader(http.StatusMultiStatus)
+	w.Write(jsonResp)
+}
+
 func SetJsonContentType(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
+}
+
+func NewPublisherServiceClient() *http.Client {
+	caCert, caErr := os.ReadFile("/cert/rootCA.pem")
+	if caErr != nil {
+		util.LogRoute("/", "error reading root CA file: "+caErr.Error())
+	}
+
+	caCertPool := x509.NewCertPool()
+	caCertPool.AppendCertsFromPEM(caCert)
+
+	tlsConfig := &tls.Config{
+		RootCAs: caCertPool,
+	}
+
+	transport := &http.Transport{
+		TLSClientConfig: tlsConfig,
+	}
+
+	client := &http.Client{
+		Transport: transport,
+		Timeout:   AUTH_TIMEOUT,
+	}
+
+	return client
 }
 
 func Cors(next http.Handler) http.Handler {
