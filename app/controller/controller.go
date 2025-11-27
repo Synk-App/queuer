@@ -68,6 +68,14 @@ func SetJsonContentType(w http.ResponseWriter) {
 }
 
 func NewPublisherServiceClient() *http.Client {
+	env := os.Getenv("ENV")
+
+	if env == "production" {
+		return &http.Client{
+			Timeout: AUTH_TIMEOUT,
+		}
+	}
+
 	caCert, caErr := os.ReadFile("/cert/rootCA.pem")
 	if caErr != nil {
 		util.LogRoute("/", "error reading root CA file: "+caErr.Error())
